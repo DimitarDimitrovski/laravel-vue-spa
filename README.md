@@ -33,7 +33,7 @@ App is split in two parts.
   about the admin's response.
 - Admin can also delete cooks/recipes/reviews/comments.
 
-###This app uses:
+### This app uses:
 
 - Vue.js for the frontend
 - Vuex for setting the state after successful JWT Auth
