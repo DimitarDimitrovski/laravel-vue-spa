@@ -20,7 +20,7 @@ class EloquentRecipe extends EloquentRepositoryImpl implements RecipeRepository
     {
         return $this->newQuery()
             ->with(['User'])->where('approved', Recipe::DB_TRUE)
-            ->orderBy('id', 'desc')->take(3)->get();
+            ->orderBy('id', 'desc')->take(Recipe::DEFAULT_RECORD_LIMIT)->get();
     }
 
     public function recommended(): Collection
@@ -28,7 +28,7 @@ class EloquentRecipe extends EloquentRepositoryImpl implements RecipeRepository
         return $this->newQuery()
             ->with(['User'])
             ->where('approved', Recipe::DB_TRUE)
-            ->where('recommended', Recipe::DB_TRUE)->take(3)->get();
+            ->where('recommended', Recipe::DB_TRUE)->take(Recipe::DEFAULT_RECORD_LIMIT)->get();
     }
 
     public function topRated(): Collection
@@ -43,7 +43,7 @@ class EloquentRecipe extends EloquentRepositoryImpl implements RecipeRepository
             ))
             ->groupBy('id')
             ->orderBy('average_rating', 'DESC')
-            ->take(6)
+            ->take(Recipe::TOP_RATED_LIMIT)
             ->get();
     }
 
@@ -62,11 +62,11 @@ class EloquentRecipe extends EloquentRepositoryImpl implements RecipeRepository
                 foreach ($searchKeywords as $searchKeyword) {
                     $query->orWhere('name', 'LIKE', '%'.$searchKeyword.'%');
                 }
-            })->take(3)->get();
+            })->take(Recipe::DEFAULT_RECORD_LIMIT)->get();
 
         if($collection->count() < 3) {
             $collection = $this->newQuery()->where('approved', Recipe::DB_TRUE)
-                ->where('type', '=', $recipe->type)->take(3)->get();
+                ->where('type', '=', $recipe->type)->take(Recipe::DEFAULT_RECORD_LIMIT)->get();
         }
 
         return $collection;
@@ -84,7 +84,7 @@ class EloquentRecipe extends EloquentRepositoryImpl implements RecipeRepository
             ->groupBy('id')
             ->orderBy('average_rating', 'DESC')
             ->where('recipes.user_id', $id)
-            ->take(3)
+            ->take(Recipe::DEFAULT_RECORD_LIMIT)
             ->get();
     }
 }

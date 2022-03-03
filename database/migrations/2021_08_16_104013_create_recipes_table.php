@@ -24,8 +24,8 @@ class CreateRecipesTable extends Migration
             $table->enum('preparation_time', ['30', '30-60', '60-120', '120-180', '180']);
             $table->enum('preparation_level', ['easy', 'medium', 'hard']);
             $table->json('ingredients');
-            $table->boolean('recommended')->default(0);
-            $table->boolean('approved')->default(0);
+            $table->boolean('recommended')->default(false);
+            $table->boolean('approved')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

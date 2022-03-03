@@ -11,6 +11,10 @@ class Recipe extends BaseModel
 {
     use HasFactory, SoftDeletes;
 
+    public const TOP_RATED_LIMIT = 6;
+    public const DEFAULT_RECORD_LIMIT = 3;
+    public const DEFAULT_PAGINATION_RECORDS = 9;
+
     protected $table = 'recipes';
 
     protected $fillable = [

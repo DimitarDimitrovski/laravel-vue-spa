@@ -20,7 +20,7 @@ class CreateReviewsTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->unsignedSmallInteger('rating');
-            $table->boolean('approved')->default(0);
+            $table->boolean('approved')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

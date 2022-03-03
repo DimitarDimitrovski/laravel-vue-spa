@@ -35,7 +35,7 @@ class CommentFactory extends Factory
     {
         return $this->state([
             'recipe_id' => null,
-            'parent_id' => Comment::where('recipe_id', '!=', null)->get()->random()->id
+            'parent_id' => Comment::whereNotNull('recipe_id')->get()->random()->id
         ]);
     }
 }

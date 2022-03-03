@@ -19,7 +19,7 @@ class CreateCommentsTable extends Migration
             $table->foreignId('recipe_id')->nullable()->constrained('recipes');
             $table->foreignId('parent_id')->nullable()->constrained('comments');
             $table->text('content');
-            $table->boolean('approved')->default(0);
+            $table->boolean('approved')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

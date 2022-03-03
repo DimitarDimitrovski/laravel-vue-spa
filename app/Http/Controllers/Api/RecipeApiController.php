@@ -43,13 +43,13 @@ class RecipeApiController extends BaseApiController
                 return RecipeResource::collection($this->recipeRepository->topRated());
             }
             case 'related': {
-                $recipe = $this->recipeRepository->findOrFail(request('id'));
+                $recipe = $this->recipeRepository->findOrFail($request->get('id'));
                 return RecipeResource::collection($this->recipeRepository->relatedRecipes($recipe));
             }
             case 'search': {
-                $collection = $this->recipeRepository->collectionByKeyword(request('keyword'));
+                $collection = $this->recipeRepository->collectionByKeyword($request->get('keyword'));
                 $page = request()->has('page') ? request('page') : 1;
-                $paginatedData = $this->getPaginatedData($collection, $page, 9);
+                $paginatedData = $this->getPaginatedData($collection, $page, Recipe::DEFAULT_PAGINATION_RECORDS);
 
                 return [
                     'data' => RecipeResource::collection($paginatedData['items']),
@@ -60,7 +60,7 @@ class RecipeApiController extends BaseApiController
                 $collection = $this->recipeRepository->newQuery()
                     ->with(['User'])->where('approved', Recipe::DB_TRUE)->get();
                 $page = request()->has('page') ? request('page') : 1;
-                $paginatedData = $this->getPaginatedData($collection, $page, 9);
+                $paginatedData = $this->getPaginatedData($collection, $page, Recipe::DEFAULT_PAGINATION_RECORDS);
 
                 return [
                     'data' => RecipeResource::collection($paginatedData['items']),
@@ -95,7 +95,7 @@ class RecipeApiController extends BaseApiController
                 $this->recipeRepository->newQuery()
                 ->where('approved', $approved)->with(['User', 'Comments', 'Reviews' => function($query) {
                     $query->orderBy('id', 'DESC');
-                    $query->limit(3);
+                    $query->limit(Recipe::DEFAULT_RECORD_LIMIT);
                 }])->findOrFail($id)
             ),
             'reviewsCount' => $this->recipeRepository->findOrFail($id)->reviewsCount(),
@@ -104,8 +104,7 @@ class RecipeApiController extends BaseApiController
     }
 
     public function store(CreateRecipeRequest $request): JsonResponse {
-        $params = $request->only(['user_id', 'name', 'description', 'type', 'preparation_time', 'preparation_level',
-            'ingredients', 'featured_image', 'featured_image', 'additional_images']);
+        $params = $request->except(['approved']);
         $additionalImages = [];
 
         if($request->file('additional_images') !== null) {
@@ -135,8 +134,7 @@ class RecipeApiController extends BaseApiController
     public function update($id, UpdateRecipeRequest $request): JsonResponse
     {
         $recipe = $this->recipeRepository->findOrFail($id);
-        $params = $request->only(['user_id', 'name', 'description', 'type', 'preparation_time', 'preparation_level',
-            'ingredients', 'featured_image', 'featured_image', 'additional_images']);
+        $params = $request->except(['approved']);
         $additionalImages = $request->get('additional_images');
 
         if($request->file('new_featured_image') !== null) {
@@ -155,10 +153,7 @@ class RecipeApiController extends BaseApiController
             $params['additional_images'] = $additionalImages;
         }
 
-        if($recipe->approved === Recipe::DB_TRUE) {
-            $params['approved'] = Recipe::DB_FALSE;
-        }
-
+        $params['approved'] = Recipe::DB_FALSE;
         event(new RecipeUpdated($recipe->id));
         $recipe->update($params);
 

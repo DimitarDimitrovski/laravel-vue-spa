@@ -38,11 +38,7 @@ class ReviewsApiController extends BaseApiController
     {
         $review = $this->reviewRepository->findOrFail($request->get('id'));
         $params = $request->only(['title', 'description', 'rating']);
-
-        if($review->approved === Review::DB_TRUE) {
-            $params['approved'] = Review::DB_FALSE;
-        }
-
+        $params['approved'] = Review::DB_FALSE;
         $review->update($params);
         event(new ReviewUpdated($review->id));
 

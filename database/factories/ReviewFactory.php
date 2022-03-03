@@ -29,7 +29,7 @@ class ReviewFactory extends Factory
             'title' => $this->faker->text(15),
             'description' => $this->faker->paragraph,
             'rating' => rand(1,5),
-            'approved' => 1
+            'approved' => true
         ];
     }
 }
