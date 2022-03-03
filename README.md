@@ -1,7 +1,7 @@
 ## SPA Using Vue.js and Laravel as backend for API
 
 This is my example of a SPA implementation.  
-After some taught on what to code, I decided to make a recipes app.  
+After some thought on what to code, I decided to make a recipes app.  
 App is split in two parts.
 - Front end part, meant for the regular users.
 - Back end responsible for the API that is used for displaying data to the front end  
